@@ -1,0 +1,70 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+    <meta charset="utf-8" />
+    <script src="Scripts/jquery-3.3.1.min.js"></script>
+</head>
+<body>
+    <div>
+        <label>用户名</label>
+        <input id="userid" type="text" />
+    </div>
+    <div>
+        <label>密码</label>
+        <input id="password" type="text" />
+    </div>
+    <div>
+        <button id="login">登陆</button>
+    </div>
+    <div>
+        <input id="docEntry" type="text" value="1" />
+        <button id="getSalesOrder">获取销售订单</button>
+    </div>
+    <script>
+        $(document).ready(function () {
+            (function () {
+                var access_token = null;
+                $("#login").click(function () {
+                    $.ajax({
+                        url: "/Token",
+                        type: "POST",
+                        data: {
+                            grant_type: "password",
+                            username: "manager",
+                            password: "56b0fbc82e5050909a1fbd10de711dbd"
+                        }
+                    }).done(function (response) {
+                        console.log("successfully");
+                        console.log(response);
+                        access_token = response.access_token;
+                    }).fail(function (error) {
+                        console.log("error");
+                        console.log(error);
+                    });
+                });
+                $("#getSalesOrder").click(function () {
+                    var docEntry = $("#docEntry").val();
+                    $.ajax({
+                        url: "api/SalesOrder/GetSalesOrder",
+                        type: "POST",
+                        dataType: "JSON",
+                        contentType: "application/json",
+                        headers: {
+                            "Authorization": "Bearer " + access_token
+                        },
+                        data: JSON.stringify(docEntry)
+                    }).done(function (response) {
+                        console.log("successfully");
+                        console.log(response);
+                    }).fail(function (error) {
+                        console.log("error");
+                        console.log(error);
+                    });
+                });
+            })();
+        });
+    </script>
+</body>
+</html>
